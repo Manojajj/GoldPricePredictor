@@ -1,40 +1,38 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import pickle
 
-def load_model(model_path):
-    with open(model_path, 'rb') as file:
-        model = pickle.load(file)
+# Load the saved model
+@st.cache
+def load_model():
+    with open('gold_price_model.pkl', 'rb') as f:
+        model = pickle.load(f)
     return model
 
-def predict_price(model, input_data):
-    return model.predict(input_data)
+model = load_model()
 
-def main():
-    # Load the model
-    model_path = 'gold_price_model.pkl'
-    model = load_model(model_path)
+# Function to predict gold price
+def predict_gold_price(SPX, USO, SLV, EUR_USD, Day, Month):
+    input_data = pd.DataFrame({'SPX': [SPX], 'USO': [USO], 'SLV': [SLV], 'EUR/USD': [EUR_USD], 'Day': [Day], 'Month': [Month]})
+    prediction = model.predict(input_data)
+    return prediction[0]
 
-    # Title
-    st.title('Gold Price Predictor')
+# Streamlit UI
+st.title('Gold Price Predictor')
 
-    # Input form for user input
-    st.sidebar.header('Input Features')
-    date = st.sidebar.date_input('Date', value=pd.to_datetime('today'))
+st.write("""
+## Enter the input parameters to predict the Gold Price
+""")
 
-    day_of_week = date.dayofweek + 1
-    month = date.month
+# User inputs
+SPX = st.number_input('Enter SPX')
+USO = st.number_input('Enter USO')
+SLV = st.number_input('Enter SLV')
+EUR_USD = st.number_input('Enter EUR/USD')
+Day = st.number_input('Enter Day (1-7)')
+Month = st.number_input('Enter Month (1-12)')
 
-    slv = st.sidebar.number_input('Silver Price', value=25.0)
-    uso = st.sidebar.number_input('US Oil Price', value=75.0)
-
-    input_data = np.array([[day_of_week, month, slv, uso]])
-
-    # Predicting price
-    if st.sidebar.button('Predict'):
-        prediction = predict_price(model, input_data)
-        st.success(f'Predicted Gold Price: ${prediction[0]:.2f}')
-
-if __name__ == '__main__':
-    main()
+# Predicting gold price
+if st.button('Predict'):
+    gold_price_prediction = predict_gold_price(SPX, USO, SLV, EUR_USD, Day, Month)
+    st.write(f"Predicted Gold Price: {gold_price_prediction}")
