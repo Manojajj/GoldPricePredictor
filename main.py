@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import pickle
-from sklearn.ensemble import RandomForestRegressor
 
-# Load the model
-@st.cache
+@st.cache_resource
 def load_model():
     with open('gold_price_model.pkl', 'rb') as f:
         model = pickle.load(f)
