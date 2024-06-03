@@ -11,14 +11,16 @@ def main():
 
     # Sidebar for user inputs
     st.sidebar.title("Gold Price Prediction Inputs")
+    SPX = st.sidebar.number_input("SPX")
+    USO = st.sidebar.number_input("USO")
+    SLV = st.sidebar.number_input("SLV")
+    EUR_USD = st.sidebar.number_input("EUR/USD")
     day = st.sidebar.selectbox("Day", list(range(1, 8)))
     month = st.sidebar.selectbox("Month", list(range(1, 13)))
-    slv = st.sidebar.number_input("Silver Rate (SLV)")
-    uso = st.sidebar.number_input("US Oil Rate (USO)")
 
     # Make prediction
     if st.sidebar.button("Predict"):
-        input_data = pd.DataFrame([[day, month, slv, uso]], columns=['day', 'month', 'SLV', 'USO'])
+        input_data = pd.DataFrame([[SPX, USO, SLV, EUR_USD, day, month]], columns=['SPX', 'USO', 'SLV', 'EUR/USD', 'Day', 'Month'])
         prediction = model.predict(input_data)
         st.write(f"Predicted Gold Price: {prediction[0]}")
 
