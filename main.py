@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # Load and preprocess data
-data = pd.read_csv('/mnt/data/gld_price_data.csv')
+data = pd.read_csv('gld_price_data.csv')
 
 # Display the data
 st.write("Gold Price Data")
