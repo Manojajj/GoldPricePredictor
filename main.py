@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import pickle
+from sklearn.ensemble import RandomForestRegressor
 
-# Load the saved model
+# Load the model
 @st.cache
 def load_model():
     with open('gold_price_model.pkl', 'rb') as f:
@@ -11,28 +13,38 @@ def load_model():
 
 model = load_model()
 
-# Function to predict gold price
-def predict_gold_price(SPX, USO, SLV, EUR_USD, Day, Month):
-    input_data = pd.DataFrame({'SPX': [SPX], 'USO': [USO], 'SLV': [SLV], 'EUR/USD': [EUR_USD], 'Day': [Day], 'Month': [Month]})
-    prediction = model.predict(input_data)
-    return prediction[0]
+# Title
+st.title("Gold Price Predictor")
 
-# Streamlit UI
-st.title('Gold Price Predictor')
+# Sidebar for input features
+st.sidebar.header("Input Features")
 
-st.write("""
-## Enter the input parameters to predict the Gold Price
-""")
+def user_input_features():
+    SPX = st.sidebar.number_input("SPX", value=0.0)
+    USO = st.sidebar.number_input("USO", value=0.0)
+    SLV = st.sidebar.number_input("SLV", value=0.0)
+    EUR_USD = st.sidebar.number_input("EUR/USD", value=0.0)
+    Day = st.sidebar.selectbox("Day", [1, 2, 3, 4, 5, 6, 7])
+    Month = st.sidebar.selectbox("Month", list(range(1, 13)))
+    data = {
+        "SPX": SPX,
+        "USO": USO,
+        "SLV": SLV,
+        "EUR/USD": EUR_USD,
+        "Day": Day,
+        "Month": Month
+    }
+    features = pd.DataFrame(data, index=[0])
+    return features
 
-# User inputs
-SPX = st.number_input('Enter SPX')
-USO = st.number_input('Enter USO')
-SLV = st.number_input('Enter SLV')
-EUR_USD = st.number_input('Enter EUR/USD')
-Day = st.number_input('Enter Day (1-7)')
-Month = st.number_input('Enter Month (1-12)')
+input_df = user_input_features()
 
-# Predicting gold price
-if st.button('Predict'):
-    gold_price_prediction = predict_gold_price(SPX, USO, SLV, EUR_USD, Day, Month)
-    st.write(f"Predicted Gold Price: {gold_price_prediction}")
+# Main panel
+st.subheader("User Input features")
+st.write(input_df)
+
+# Prediction
+prediction = model.predict(input_df)
+
+st.subheader("Predicted Gold Price")
+st.write(prediction[0])
