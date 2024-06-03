@@ -1,47 +1,48 @@
 import streamlit as st
 import pandas as pd
-import pickle
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-@st.cache_resource
-def load_model():
-    with open('gold_price_model.pkl', 'rb') as f:
-        model = pickle.load(f)
-    return model
+# Load and preprocess data
+data = pd.read_csv('/mnt/data/gld_price_data.csv')
 
-model = load_model()
+# Display the data
+st.write("Gold Price Data")
+st.write(data.head())
 
-# Title
-st.title("Gold Price Predictor")
+# Feature and target variables
+X = data.drop(columns=['Date', 'GLD'])
+y = data['GLD']
 
-# Sidebar for input features
-st.sidebar.header("Input Features")
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-def user_input_features():
-    SPX = st.sidebar.number_input("SPX", value=0.0)
-    USO = st.sidebar.number_input("USO", value=0.0)
-    SLV = st.sidebar.number_input("SLV", value=0.0)
-    EUR_USD = st.sidebar.number_input("EUR/USD", value=0.0)
-    Day = st.sidebar.selectbox("Day", [1, 2, 3, 4, 5, 6, 7])
-    Month = st.sidebar.selectbox("Month", list(range(1, 13)))
-    data = {
-        "SPX": SPX,
-        "USO": USO,
-        "SLV": SLV,
-        "EUR/USD": EUR_USD,
-        "Day": Day,
-        "Month": Month
-    }
-    features = pd.DataFrame(data, index=[0])
-    return features
+# Train the model
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
 
-input_df = user_input_features()
+# Predict and evaluate the model
+y_pred = model.predict(X_test)
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 
-# Main panel
-st.subheader("User Input features")
-st.write(input_df)
+st.write("Model Performance")
+st.write(f"Mean Absolute Error: {mae}")
+st.write(f"Mean Squared Error: {mse}")
+st.write(f"R-squared: {r2}")
 
-# Prediction
+# Streamlit app for prediction
+st.write("### Predict Gold Price")
+st.write("Input the values to predict the gold price")
+
+input_data = {}
+for column in X.columns:
+    input_data[column] = st.number_input(f"Input {column}", value=0.0)
+
+input_df = pd.DataFrame([input_data])
 prediction = model.predict(input_df)
 
-st.subheader("Predicted Gold Price")
-st.write(prediction[0])
+st.write(f"Predicted Gold Price: {prediction[0]}")
