@@ -1,6 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
@@ -27,10 +25,6 @@ merged_df['Month'] = merged_df['Date'].dt.month - 1  # January=0, December=11
 # Fill missing values with forward fill method
 merged_df.fillna(method='ffill', inplace=True)
 merged_df.fillna(method='bfill', inplace=True)
-
-# Correlation Matrix
-correlation = merged_df.corr()
-sns.heatmap(correlation, cbar=True, square=True, annot=True, annot_kws={'size':8}, cmap='Blues')
 
 # Step 3: Prepare the data for modeling
 features = merged_df.drop(['Date', 'Gold'], axis=1)
