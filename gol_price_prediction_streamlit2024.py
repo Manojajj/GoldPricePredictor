@@ -5,12 +5,28 @@ from sklearn.metrics import mean_absolute_error
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Read the AdSense HTML code from the file
-with open("index.html", "r") as file:
-    adsense_html = file.read()
+# AdSense HTML code
+adsense_html = """
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4124087181208916"
+     crossorigin="anonymous"></script>
+<!-- gold-price-predictor -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-4124087181208916"
+     data-ad-slot="9556206959"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+"""
+
+# Your Streamlit app content
+st.title('Gold Prices Prediction')
 
 # Insert AdSense ad
 components.html(adsense_html, height=100)
+
 
 # Step 1: Read and concatenate the Excel files
 files = ['Gold Prices.xlsx', 'Crude Oil Prices.xlsx', 'USDINR.xlsx', 'Silver Prices.xlsx', 'EURUSD.xlsx', 'VIX.xlsx']
