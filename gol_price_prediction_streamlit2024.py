@@ -3,6 +3,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 import streamlit as st
+import streamlit.components.v1 as components
+
+# Read the AdSense HTML code from the file
+with open("index.html", "r") as file:
+    adsense_html = file.read()
+
+# Insert AdSense ad
+components.html(adsense_html, height=100)
 
 # Step 1: Read and concatenate the Excel files
 files = ['Gold Prices.xlsx', 'Crude Oil Prices.xlsx', 'USDINR.xlsx', 'Silver Prices.xlsx', 'EURUSD.xlsx', 'VIX.xlsx']
@@ -64,15 +72,3 @@ input_df = input_df[features.columns]
 # Predict the Gold Price
 predicted_price = model.predict(input_df)
 st.write(f'Predicted Gold Price: {predicted_price[0]}')
-
-import streamlit.components.v1 as components
-
-# Read the AdSense HTML code from the file
-with open("index.html", "r") as file:
-    adsense_html = file.read()
-
-# Your Streamlit app content
-st.title('Gold Prices Prediction')
-
-# Insert AdSense ad
-components.html(adsense_html, height=100)
