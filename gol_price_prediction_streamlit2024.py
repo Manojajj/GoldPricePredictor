@@ -21,9 +21,6 @@ adsense_html = """
 </script>
 """
 
-# Your Streamlit app content
-st.title('Gold Prices Prediction')
-
 # Insert AdSense ad
 components.html(adsense_html, height=100)
 
