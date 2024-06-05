@@ -64,3 +64,15 @@ input_df = input_df[features.columns]
 # Predict the Gold Price
 predicted_price = model.predict(input_df)
 st.write(f'Predicted Gold Price: {predicted_price[0]}')
+
+import streamlit.components.v1 as components
+
+# Read the AdSense HTML code from the file
+with open("index.html", "r") as file:
+    adsense_html = file.read()
+
+# Your Streamlit app content
+st.title('Gold Prices Prediction')
+
+# Insert AdSense ad
+components.html(adsense_html, height=100)
